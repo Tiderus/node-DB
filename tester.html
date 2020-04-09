@@ -1,0 +1,72 @@
+<html>
+<head>
+	<link rel="stylesheet" href="css/tree.css">
+	 
+<script >
+function printNode(text){
+var obj = JSON.parse(text);
+var x ="";
+ for (i in obj.Nodes) {
+    x += " <li role=\"treeitem\" aria-expanded=\"false\"><span>"+obj.Nodes[i].Id+"</span> <ul role=\"group\">"+printNode(JSON.stringify(obj.Nodes[i]))+" </ul><//li>";
+  }
+  for (i in obj.Values) {
+    x += " <li role=\"treeitem\" class=\"doc\">"+obj.Values[i].Id+":"+obj.Values[i].Value+"</li>";
+  }
+  return x;
+}
+
+function printValue(text){
+var obj = JSON.parse(text);
+return "<li role=\"treeitem\" class=\"doc\">"+obj.Id+":"+obj.Value+"</li>"
+}
+
+var url="http://localhost:6969/";
+var method = "GET";
+var params = "";
+function send(){
+var xhr = new XMLHttpRequest();
+url = "http://localhost:6969/"+document.getElementById("url").value;
+method=document.getElementById("method").value;
+xhr.open(method, url, true);
+var user = document.getElementById("user").value;
+var db = document.getElementById("db").value;
+//Send the proper header information along with the request
+xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+xhr.setRequestHeader("user",user);
+xhr.setRequestHeader("db",db);
+
+xhr.onreadystatechange = function() { // Call a function when the state changes.
+    if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+		
+		if(method == "GET" && this.responseText !="" ){
+	
+		
+		
+		document.getElementById("example").innerHTML = this.responseText;
+		
+		}
+   }
+}
+params = document.getElementById("params").value;
+xhr.send(params);
+} </script>
+</head>
+<body>
+
+
+Params<input type="text" id="params" /><br/>
+Url<input type="text" id="url" /><br/>
+User<input type="text" id="user" /><br/>
+DB<input type="text" id="db" /><br/>
+<select id="method">
+<option value="POST">Post</option>
+<option value="GET" selected>Get</option>
+</select><br/>
+<button onclick="send()">Send</button><br/>
+<div id="example"></div>
+
+
+
+</body>
+
+</html>
